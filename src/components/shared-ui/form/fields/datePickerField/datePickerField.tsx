@@ -1,7 +1,7 @@
 import {FieldPath, FieldValues} from "react-hook-form";
-import {FormField, FormFieldProps} from "../formField/formField.tsx";
+import {FormField, FormFieldProps} from "../../formField/formField.tsx";
 import styled from "styled-components";
-import {BaseFormFieldStyled} from "../formField/baseFormFieldStyles.tsx";
+import {BaseFormFieldStyled} from "../../formField/baseFormFieldStyles.tsx";
 
 const StyledDataPicker = styled.input`
 	${BaseFormFieldStyled};

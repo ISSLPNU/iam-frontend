@@ -15,7 +15,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 		<AuthContext.Provider value={{user, isAuthenticated: () => authenticated, logout}}>
 			{children}
 		</AuthContext.Provider>
-	);
-};
+	)
+}
 
 type AuthProviderProps = {} & PropsWithChildren;

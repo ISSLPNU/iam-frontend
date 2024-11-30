@@ -13,3 +13,18 @@ export interface IUserCreate {
 	email: string;
 	password: string;
 }
+
+export interface IUserSignIn {
+	email: string;
+	password: string;
+}
+
+export interface IUserSignIn {
+	email: string;
+	password: string;
+}
+
+export interface IUserRestorePassword {
+	token: string;
+	password: string;
+}

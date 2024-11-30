@@ -5,7 +5,7 @@ import styled, {css} from "styled-components";
 import {Button} from "../../../common/button";
 import {ModalCloseStatus} from "../../../modal/modal/modalCloseStatus.ts";
 import {Label} from "../../../common/label";
-import {FormField} from "../formField/formField.tsx";
+import {FormField} from "../../formField/formField.tsx";
 
 const StyledItemsListField = styled.div<{ $invalid: boolean }>`
     box-sizing: border-box;

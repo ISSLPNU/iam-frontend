@@ -1,8 +1,8 @@
-import {FormField, FormFieldProps} from "../formField/formField.tsx";
+import {FormField, FormFieldProps} from "../../formField/formField.tsx";
 import {FieldPath, FieldValues, PathValue, useController} from "react-hook-form";
 import {useEffect, useState} from "react";
 import styled, {css} from "styled-components";
-import {BaseFormFieldStyled} from "../formField/baseFormFieldStyles.tsx";
+import {BaseFormFieldStyled} from "../../formField/baseFormFieldStyles.tsx";
 import {SelectedItem} from "./selectedItem.tsx";
 import {ChevronDownIcon, X2Icon} from "../../../icons/mainIcons.tsx";
 import {Dropdown} from "../../../activeButtons/dropdownV2";

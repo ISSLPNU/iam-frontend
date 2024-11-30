@@ -1,8 +1,8 @@
-import {FormField, FormFieldProps} from "../formField/formField.tsx";
+import {FormField, FormFieldProps} from "../../formField/formField.tsx";
 import {FieldPath, FieldValues, useWatch} from "react-hook-form";
 import styled from "styled-components";
 import {useEffect, useRef} from "react";
-import {BaseFormFieldStyled} from "../formField/baseFormFieldStyles.tsx";
+import {BaseFormFieldStyled} from "../../formField/baseFormFieldStyles.tsx";
 
 const StyledTextArea = styled.textarea`
     ${BaseFormFieldStyled};

@@ -5,7 +5,9 @@ import {useAuth} from "../auth-context.tsx";
 export const RequireAuth = ({...props}: RequireAuthProps) => {
 	const {isAuthenticated} = useAuth();
 
-	if (!isAuthenticated) {
+	console.log(isAuthenticated());
+
+	if (!isAuthenticated()) {
 		return (
 			<Navigate
 				to={props.unauthenticatedRedirectPath || "/auth/signIn"}

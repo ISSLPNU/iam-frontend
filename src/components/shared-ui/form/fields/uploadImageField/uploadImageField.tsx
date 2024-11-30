@@ -1,6 +1,6 @@
 import {ReactNode, useRef} from "react";
 import {FieldPath, FieldValues, useController} from "react-hook-form";
-import {FormField, FormFieldProps} from "../formField/formField.tsx";
+import {FormField, FormFieldProps} from "../../formField/formField.tsx";
 import styled, {css} from "styled-components";
 import {Upload2Icon, X2Icon} from "../../../icons/mainIcons.tsx";
 
