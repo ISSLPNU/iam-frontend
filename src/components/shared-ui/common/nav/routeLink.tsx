@@ -1,25 +1,22 @@
 import styled from "styled-components";
-import {NavLink, NavLinkProps} from "react-router-dom";
+import {NavLinkProps, To, useNavigate} from "react-router-dom";
 import {ReactNode} from "react";
 
-const StyledRouteLink = styled(NavLink)`
+const StyledRouteLink = styled.a`
     box-sizing: border-box;
     padding: 5px 10px;
     border-radius: 5px;
-
-    width: 100%;
-
-    font-size: 18px;
-
-    color: #fff;
-
+    font-size: 16px;
     transition: .2s;
+    text-decoration: none;
 
-    background: #101010;
+    color: #0069ff;
+
+    user-select: none;
 
     &:hover {
-        color: #0069ff;
-        background-color: #0069ff22;
+        color: #0d419b;
+        cursor: pointer;
     }
 `
 
@@ -28,19 +25,28 @@ const StyledLinkIconWrapper = styled.div`
 `
 
 export const RouteLink = ({children, icon, ...props}: IRouteLinkProps) => {
-  return (
-    <StyledRouteLink {...props}>
-      {icon && (
-        <StyledLinkIconWrapper>
-          {icon}
-        </StyledLinkIconWrapper>
-      )}
-      {children}
-    </StyledRouteLink>
-  )
+	const navigate = useNavigate();
+
+	return (
+		<StyledRouteLink
+			onClick={(_) => {
+				if (props.to) {
+					navigate(props.to as string);
+				}
+			}}
+		>
+			{icon && (
+				<StyledLinkIconWrapper>
+					{icon}
+				</StyledLinkIconWrapper>
+			)}
+			{children}
+		</StyledRouteLink>
+	)
 }
 
 export type IRouteLinkProps = {
-  icon?: ReactNode
-  children?: ReactNode
-} & NavLinkProps
+	icon?: ReactNode;
+	children?: ReactNode;
+	to?: To;
+} & Omit<NavLinkProps, "to">;

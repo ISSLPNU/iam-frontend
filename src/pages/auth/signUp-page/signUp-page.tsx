@@ -1,13 +1,16 @@
 import {ComponentProps} from "react";
 import styled from "styled-components";
-import {Button, SimpleForm} from "../../../components/shared-ui";
-import {IUserCreate} from "../../../api/entity/user.ts";
+import {Button, RouteLink, SimpleForm} from "../../../components/shared-ui";
+import {IUserSignUp} from "../../../api/entity/user.ts";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 
 import * as Yup from "yup";
 import {PasswordField} from "../../../components/shared-ui/form/fields/passwordField/passwordField.tsx";
 import {InputField} from "../../../components/shared-ui/form/fields/inputField/inputField.tsx";
+import {useSignUp} from "../../../api/hook/user-auth/use-signUp.tsx";
+import {useNavigate} from "react-router-dom";
+import {authPages} from "../auth-routes.tsx";
 
 const StyledFormWrapper = styled.div`
     display: flex;
@@ -23,7 +26,7 @@ const StyledFormWrapper = styled.div`
 const StyledForm = styled(SimpleForm)`
     background: #111111;
 
-    min-width: 400px;
+    width: 400px;
 
     padding: 0 20px 20px 20px;
 `
@@ -41,19 +44,33 @@ export const SignUpPage = (
 			firstName: "TestFirstName",
 			lastName: "TestSecondName",
 			email: "test@example.com",
-			password: "test",
-			repeatPassword: "test",
+			password: "Aa1!aaaa",
+			repeatPassword: "Aa1!aaaa",
 		}
 	})
+	const navigate = useNavigate();
+	const {mutate} = useSignUp()
 
 	const onSubmit: SubmitHandler<UserCreateFromType> = (data) => {
-		console.log(data)
+		mutate(data, {
+			onSuccess: () => {
+				navigate(authPages.user.settings())
+			},
+			onError: (error) => {
+				console.error(error)
+			}
+		})
 	}
 
 	return (
 		<StyledFormWrapper>
 			<StyledForm formTitle="Sign Up"
 			            onSubmit={handleSubmit(onSubmit)}
+			            footerLinks={(
+				            <>
+					            <RouteLink to={authPages.signInPage()}>Sign In</RouteLink>
+				            </>
+			            )}
 			            {...props}
 			>
 				<InputField control={control} name="firstName" labelText="First name"/>
@@ -80,7 +97,7 @@ type SignUpPageProps = {
 
 type UserCreateFromType = {
 	repeatPassword: string
-} & IUserCreate
+} & IUserSignUp
 
 const schema = Yup.object().shape({
 	firstName: Yup.string().label("First name")
@@ -90,7 +107,11 @@ const schema = Yup.object().shape({
 	email: Yup.string().label("Email")
 		.required(),
 	password: Yup.string().label("Password").trim()
-		.required(),
+		.required()
+		.matches(
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#\$!?])[a-zA-Z\d#\$!?]{8,}$/,
+			"Password must be 8+ chars with upper, lower, number, and special (#$!?)"
+		),
 	repeatPassword: Yup.string().label("Repeat Password").trim()
 		.required()
 		.oneOf([Yup.ref('password')], "Your passwords do not match")

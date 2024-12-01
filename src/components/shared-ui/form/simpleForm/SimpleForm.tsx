@@ -35,10 +35,12 @@ interface IFormFooterLinksProps{
 const StyledFormFooterLinks = styled.div<IFormFooterLinksProps>`
     display: flex;
     
-    flex-direction: ${props => props.flexDirection || "row"};
-    flex-wrap: wrap;
+    flex-direction: ${props => props.flexDirection || "column"};
+    flex-wrap: nowrap;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+		
+		width: 100%;
 `
 
 export const SimpleForm = ({flexDirection, formTitle, footerLinks, children, ...props}: SimpleFormProps) => {

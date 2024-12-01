@@ -23,6 +23,9 @@ const StyledFormField = styled.div`
     font-size: 24px;
 `
 
+const StyledErrorWrapper = styled.div`
+`
+
 const StyledErrorMessage = styled.span`
     box-sizing: border-box;
     color: #ffffff;
@@ -32,6 +35,14 @@ const StyledErrorMessage = styled.span`
     min-height: 18px;
 
     padding: 0 2px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+		
+		text-align: start;
 		
 		&:not(:last-child){
         margin: 0 0 10px 0;
@@ -54,7 +65,9 @@ export const FormField = <TFieldValues extends FieldValues, TName extends FieldP
 				<StyledFormField key={inputId} className={fieldState.error?.message ? "invalid" : ""}>
 					{labelText && <Label htmlFor={inputId}>{labelText}</Label>}
 					{render({id: inputId, field, fieldState, formState})}
-					<StyledErrorMessage>{fieldState.error?.message}</StyledErrorMessage>
+					<StyledErrorWrapper>
+						<StyledErrorMessage>{fieldState.error?.message}</StyledErrorMessage>
+					</StyledErrorWrapper>
 				</StyledFormField>
 			)}
 		/>

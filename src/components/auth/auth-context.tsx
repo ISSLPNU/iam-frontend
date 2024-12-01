@@ -5,6 +5,7 @@ type ContentType = {
 	isAuthenticated: () => boolean;
 	user?: IUser;
 	logout: () => void;
+	login: (token: string) => void;
 }
 
 export const AuthContext = createContext<ContentType>({
@@ -12,6 +13,9 @@ export const AuthContext = createContext<ContentType>({
 		throw new Error("Method not implemented")
 	},
 	logout(): void {
+		throw new Error("Method not implemented")
+	},
+	login(): void {
 		throw new Error("Method not implemented")
 	}
 })

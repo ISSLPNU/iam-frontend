@@ -1,7 +1,7 @@
-import {ComponentProps} from "react";
+import {ComponentProps, useEffect} from "react";
 import {useAuth} from "../../../components/auth/auth-context.tsx";
 import styled from "styled-components";
-import {SimpleForm} from "../../../components/shared-ui";
+import {Button, SimpleForm} from "../../../components/shared-ui";
 import {InputField} from "../../../components/shared-ui/form/fields/inputField/inputField.tsx";
 import {IUser} from "../../../api/entity/user.ts";
 import * as Yup from "yup";
@@ -18,6 +18,8 @@ const StyledFormWrapper = styled.div`
 
     width: 100%;
     height: 100%;
+
+    gap: 20px;
 `
 
 const StyledForm = styled(SimpleForm)`
@@ -31,18 +33,20 @@ const StyledForm = styled(SimpleForm)`
 export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 	const {user} = useAuth()
 
-	const {handleSubmit, control} = useForm<UserSettingForm>({
+	const {handleSubmit, control, reset} = useForm<UserSettingForm>({
 		mode: "onChange",
 		resolver: yupResolver(schema),
 		disabled: true,
 		defaultValues: {
-			firstName: user?.firstName || "Unknown",
-			lastName: user?.lastName || "Unknown",
-			email: user?.email || "Unknown",
 			tfaEnabled: false,
 		}
 	})
 
+	useEffect(() => {
+		reset(user)
+	}, [reset, user])
+
+	const {logout} = useAuth()
 	const onSubmit: SubmitHandler<UserSettingForm> = (data) => {
 		console.log(data)
 	}
@@ -58,6 +62,10 @@ export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 				<InputField disabled control={control} name="email" labelText="Email"/>
 				<TFAField control={control} name="tfaEnabled"/>
 			</StyledForm>
+
+			<Button themeStyle="message" onClick={logout}>
+				Logout
+			</Button>
 		</StyledFormWrapper>
 	)
 }

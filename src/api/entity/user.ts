@@ -1,3 +1,7 @@
+export interface IAuthenticationActionRequest{
+	token: string;
+}
+
 export interface IUser {
 	id: string;
 	firstName: string;
@@ -7,7 +11,7 @@ export interface IUser {
 	role: string;
 }
 
-export interface IUserCreate {
+export interface IUserSignUp {
 	firstName: string;
 	lastName: string;
 	email: string;
@@ -19,12 +23,15 @@ export interface IUserSignIn {
 	password: string;
 }
 
-export interface IUserSignIn {
-	email: string;
-	password: string;
+export interface IUserSignInResponse extends IAuthenticationActionRequest {
+	twoFactor: boolean;
+	emailConfirmed: boolean;
 }
 
-export interface IUserRestorePassword {
-	token: string;
+export interface IUserRestorePasswordRequest {
+	email: string;
+}
+
+export interface IUserRestorePassword extends IAuthenticationActionRequest {
 	password: string;
 }

@@ -1,17 +1,15 @@
 import {ComponentProps} from "react";
-import styled from "styled-components";
-import {Button, RouteLink, SimpleForm} from "../../../components/shared-ui";
-import {IUserSignIn} from "../../../api/entity/user.ts";
+import {useAuthActionToken} from "../../../hook/use-auth-action-token.tsx";
+import {IUserRestorePassword} from "../../../api/entity/user.ts";
+import * as Yup from "yup";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-
-import * as Yup from "yup";
-import {InputField} from "../../../components/shared-ui/form/fields/inputField/inputField.tsx";
 import {PasswordField} from "../../../components/shared-ui/form/fields/passwordField/passwordField.tsx";
-import {useSignIn} from "../../../api/hook/user-auth/use-signIn.tsx";
-import {useAuth} from "../../../components/auth/auth-context.tsx";
+import {Button, SimpleForm} from "../../../components/shared-ui";
+import styled from "styled-components";
+import {useRestorePasswordConfirm} from "../../../api/hook/user-auth/use-restore-password-confirm.tsx";
 import {useNavigate} from "react-router-dom";
-import {authPages} from "../auth-routes.tsx";
+import {authPages} from "../../auth/auth-routes.tsx";
 
 const StyledFormWrapper = styled.div`
     display: flex;
@@ -32,69 +30,69 @@ const StyledForm = styled(SimpleForm)`
     padding: 0 20px 20px 20px;
 `
 
-export const SignInPage = (
+export const PasswordRestoreConfirmPage = (
 	{
 		disabled,
 		...props
-	}: SignInPageProps) => {
-	const {handleSubmit, control, formState} = useForm<UserSignInFromType>({
+	}: PasswordRestoreProps) => {
+	const {token} = useAuthActionToken("token")
+
+	const {handleSubmit, control, formState} = useForm<UserPasswordRestoreForm>({
 		mode: "onChange",
 		resolver: yupResolver(schema),
 		disabled: disabled || false,
 		defaultValues: {
-			email: "test@example.com",
+			token: token,
 			password: "Aa1!aaaa",
+			repeatPassword: "Aa1!aaaa"
 		}
 	})
 	const navigate = useNavigate();
-	const {mutate} = useSignIn()
-	const {login} = useAuth()
+	const {mutate} = useRestorePasswordConfirm()
 
-	const onSubmit: SubmitHandler<UserSignInFromType> = (data) => {
+	const onSubmit: SubmitHandler<UserPasswordRestoreForm> = (data) => {
 		mutate(data, {
-			onSuccess: data => {
-				login(data.data.token)
-				navigate(authPages.user.settings())
+			onSuccess: () => {
+				navigate(authPages.signInPage())
 			}
 		})
 	}
 
 	return (
 		<StyledFormWrapper>
-			<StyledForm formTitle="Sign In"
+			<StyledForm formTitle="New password"
 			            onSubmit={handleSubmit(onSubmit)}
-			            footerLinks={(
-										<>
-											<RouteLink to={authPages.signUpPage()}>Sign Up</RouteLink>
-											<RouteLink to={authPages.restorePassword()}>Forgot your password?</RouteLink>
-										</>
-			            )}
 			            {...props}
 			>
-				<InputField control={control} name="email" labelText="Email"/>
 				<PasswordField control={control} name="password" labelText="Password"/>
+				<PasswordField control={control} name="repeatPassword" labelText="Repeat Password"/>
 				<Button
 					disabled={!formState.isValid || disabled}
 					themeStyle="success"
 					style={{marginTop: "10px"}}
 					type="submit"
 				>
-					Sign In
+					Restore
 				</Button>
 			</StyledForm>
 		</StyledFormWrapper>
 	)
 }
 
-type SignInPageProps = {
+type PasswordRestoreProps = {
 	disabled?: boolean
 } & Omit<ComponentProps<"form">, "ref" | "onSubmit" | "children" | "defaultValue">
 
-type UserSignInFromType = {} & IUserSignIn
+type UserPasswordRestoreForm = {
+	repeatPassword: string
+} & IUserRestorePassword
 
 const schema = Yup.object().shape({
-	email: Yup.string().label("Email")
+	token: Yup.string().required(),
+	password: Yup.string().label("Password").trim()
 		.required(),
-	password: Yup.string().label("Password")
-		.required(),
+	repeatPassword: Yup.string().label("Repeat Password").trim()
+		.required()
+		.oneOf([Yup.ref('password')], "Your passwords do not match")
 })
+
