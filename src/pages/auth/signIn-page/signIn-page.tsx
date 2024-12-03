@@ -17,6 +17,7 @@ import axios from "axios";
 import {Modal} from "../../../components/shared-ui/modal/modal/modal.tsx";
 import {TFACodeModal} from "./tfa-code-modal.tsx";
 import {useTwoFactorConfirm} from "../../../api/hook/user-auth/use-two-factor-confirm.tsx";
+import ReCAPTCHA from "react-google-recaptcha";
 
 
 const StyledFormWrapper = styled.div`
@@ -121,6 +122,11 @@ export const SignInPage = (
 				>
 					<InputField control={control} name="email" labelText="Email"/>
 					<PasswordField control={control} name="password" labelText="Password"/>
+					<ReCAPTCHA
+						style={{ display: "inline-block" }}
+						theme="dark"
+						sitekey={"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+					/>
 					<Button
 						disabled={!formState.isValid || disabled}
 						themeStyle="success"

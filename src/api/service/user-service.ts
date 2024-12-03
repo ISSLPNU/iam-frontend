@@ -11,6 +11,10 @@ class UserService {
 	whoami(): Promise<AxiosResponse<IUser>> {
 		return axiosInstance.get(`${this.url}/whoami`)
 	}
+
+	toggleTFA(enabled: boolean): Promise<AxiosResponse<void>> {
+		return axiosInstance.patch(`${this.url}/tfa`, null, {params: {enabled}})
+	}
 }
 
 export const userService = new UserService();

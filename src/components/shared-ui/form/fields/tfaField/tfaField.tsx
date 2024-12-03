@@ -55,14 +55,14 @@ const StyledSide = styled.div`
 `
 
 const StyledEnableTFAButton = styled(Button)`
-		height: min-content;
-		font-size: 14px;
-		padding: 2px 15px
+    height: min-content;
+    font-size: 14px;
+    padding: 2px 15px
 `
 
 export const TFAField = <TFieldValues extends FieldValues, TName extends FieldPath<TFieldValues>>(
 	{
-		onEnableTFA,
+		onToggleTFA,
 		...props
 	}: PasswordFieldProps & Omit<FormFieldProps<TFieldValues, TName>, "render">) => {
 	return (
@@ -70,16 +70,16 @@ export const TFAField = <TFieldValues extends FieldValues, TName extends FieldPa
 			<StyledTFAField id={id}>
 				<StyledSide>
 					<StyledTFAText $enabled={field.value === true}>TFA:</StyledTFAText>
-					<StyledTFALabel $enabled={field.value === true}>{field.value === true ? "Enabled" : "Disabled"}</StyledTFALabel>
+					<StyledTFALabel $enabled={field.value === true}>
+						{field.value === true ? "Enabled" : "Disabled"}
+					</StyledTFALabel>
 				</StyledSide>
 				<StyledSide>
-					{field.value === false && (
-						<StyledEnableTFAButton themeStyle="success"
-						                       onClick={() => {onEnableTFA?.()}}
-						>
-							Enable TFA
-						</StyledEnableTFAButton>
-					)}
+					<StyledEnableTFAButton themeStyle={field.value === false ? "success" : "danger"}
+					                       onClick={() => onToggleTFA?.(!!field.value)}
+					>
+						{field.value === false ? "Enable TFA" : "Disable TFA"}
+					</StyledEnableTFAButton>
 				</StyledSide>
 			</StyledTFAField>
 		)}/>
@@ -87,5 +87,5 @@ export const TFAField = <TFieldValues extends FieldValues, TName extends FieldPa
 }
 
 type PasswordFieldProps = {
-	onEnableTFA?: () => void
+	onToggleTFA?: (isTFAEnabled: boolean) => void
 } & ComponentProps<"div">

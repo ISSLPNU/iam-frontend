@@ -14,7 +14,7 @@ export const SignUpConfirmationPage = ({...props}: SignUpConfirmationProps) => {
 
 	useEffect(() => {
 		mutate({token: token}, {
-			onSuccess(data) {
+			onSuccess() {
 				setMessage("Email successfully confirmed")
 				toast.success("Email successfully confirmed")
 				setTimeout(() => {

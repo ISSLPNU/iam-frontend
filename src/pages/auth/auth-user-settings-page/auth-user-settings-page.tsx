@@ -1,4 +1,4 @@
-import {ComponentProps, useEffect} from "react";
+import {ComponentProps, useCallback, useEffect} from "react";
 import {useAuth} from "../../../components/auth/auth-context.tsx";
 import styled from "styled-components";
 import {Button, SimpleForm} from "../../../components/shared-ui";
@@ -8,6 +8,9 @@ import * as Yup from "yup";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {TFAField} from "../../../components/shared-ui/form/fields/tfaField/tfaField.tsx";
+import {useToggleTFA} from "../../../api/hook/user/use-toggle-tfa.tsx";
+import {toast} from "react-toastify";
+import axios from "axios";
 
 const StyledFormWrapper = styled.div`
     display: flex;
@@ -33,7 +36,7 @@ const StyledForm = styled(SimpleForm)`
 export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 	const {user} = useAuth()
 
-	const {handleSubmit, control, reset} = useForm<UserSettingForm>({
+	const {handleSubmit, control, reset, setValue} = useForm<UserSettingForm>({
 		mode: "onChange",
 		resolver: yupResolver(schema),
 		disabled: true,
@@ -51,6 +54,28 @@ export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 		console.log(data)
 	}
 
+	const {toggleTFA} = useToggleTFA()
+
+	const toggleTFAEvent = useCallback((isTFAEnabled: boolean) => {
+		toggleTFA(!isTFAEnabled, {
+			onSuccess: () => {
+				if (isTFAEnabled){
+					toast.warning("TFA disabled")
+				} else {
+					toast.success("TFA enabled")
+				}
+				setValue("tfaEnabled", !isTFAEnabled)
+			},
+			onError: error => {
+				if (axios.isAxiosError(error)) {
+					if (error.response && !error.response.data.errors && error.response.data.message) {
+						toast.error(error.response?.data.message)
+					}
+				}
+			}
+		})
+	}, [toggleTFA])
+
 	return (
 		<StyledFormWrapper>
 			<StyledForm formTitle="Settings"
@@ -60,9 +85,8 @@ export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 				<InputField disabled control={control} name="firstName" labelText="First Name"/>
 				<InputField disabled control={control} name="lastName" labelText="Last Name"/>
 				<InputField disabled control={control} name="email" labelText="Email"/>
-				<TFAField control={control} name="tfaEnabled"/>
+				<TFAField control={control} name="tfaEnabled" onToggleTFA={toggleTFAEvent} />
 			</StyledForm>
-
 			<Button themeStyle="message" onClick={logout}>
 				Logout
 			</Button>
