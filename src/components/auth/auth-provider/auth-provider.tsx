@@ -3,6 +3,7 @@ import {useUserStore} from "../store/user-store.tsx";
 import {AuthContext} from "../auth-context.tsx";
 import {useShallow} from "zustand/react/shallow";
 import {useUserWhoami} from "../../../api/hook/user/use-user-whoami.tsx";
+import {toast} from "react-toastify";
 
 export const AuthProvider = ({children}: AuthProviderProps) => {
 	const {user, authenticated, logout, setUserToken, setUser, token} = useUserStore(
@@ -33,8 +34,13 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
 		}
 	}, [setUser, userDetails]);
 
+	const logoutWrapper = useCallback(() => {
+		logout()
+		toast.success("Logged out")
+	}, [logout])
+
 	return (
-		<AuthContext.Provider value={{user, isAuthenticated: () => authenticated, logout, login}}>
+		<AuthContext.Provider value={{user, isAuthenticated: () => authenticated, logout: logoutWrapper, login}}>
 			{children}
 		</AuthContext.Provider>
 	)

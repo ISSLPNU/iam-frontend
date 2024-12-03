@@ -11,6 +11,7 @@ export const InputField = <TFieldValues extends FieldValues, TName extends Field
 		<FormField {...props} render={({id, field, fieldState}) => (
 			<Input id={id}
 			       {...field}
+			       type={props.type}
 			       readOnly={props.readOnly}
 			       invalid={fieldState.invalid}
 			/>

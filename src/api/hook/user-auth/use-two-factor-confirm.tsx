@@ -1,5 +1,5 @@
 import {useMutation} from "@tanstack/react-query";
-import {IAuthenticationActionRequest} from "../../entity/user.ts";
+import {ITwoFactorRequest} from "../../entity/user.ts";
 import {userAuthService} from "../../service/user-auth-service.ts";
 import {useMutationResponseState} from "../../../hook/useMutationResponseState.tsx";
 
@@ -7,7 +7,7 @@ import {useMutationResponseState} from "../../../hook/useMutationResponseState.t
 export const useTwoFactorConfirm = () => {
 	const {mutate, ...props} = useMutation({
 		mutationKey: ["user", "auth", "twoFactorConfirm"],
-		mutationFn: (request: IAuthenticationActionRequest) => userAuthService.twoFactorConfirm(request),
+		mutationFn: (request: ITwoFactorRequest) => userAuthService.twoFactorConfirm(request),
 	})
 
 	const {mutate: twoFactorConfirm, response} = useMutationResponseState(mutate)

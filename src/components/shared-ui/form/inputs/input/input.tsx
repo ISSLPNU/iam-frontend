@@ -53,7 +53,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((
 		return (
 			<StyledInput
 				className={invalid ? "invalid" : ""}
-				{...props}
 				ref={ref}
 				value={props.value ?? ""} // TODO: Think about this
 				onChange={(e) => {
@@ -61,6 +60,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>((
 						onChange(e)
 					}
 				}}
+				{...props}
 			/>
 		)
 	}

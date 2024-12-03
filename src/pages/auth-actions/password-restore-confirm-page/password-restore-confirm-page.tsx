@@ -10,6 +10,8 @@ import styled from "styled-components";
 import {useRestorePasswordConfirm} from "../../../api/hook/user-auth/use-restore-password-confirm.tsx";
 import {useNavigate} from "react-router-dom";
 import {authPages} from "../../auth/auth-routes.tsx";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 const StyledFormWrapper = styled.div`
     display: flex;
@@ -54,6 +56,14 @@ export const PasswordRestoreConfirmPage = (
 		mutate(data, {
 			onSuccess: () => {
 				navigate(authPages.signInPage())
+				toast.success("New password successfully applied")
+			},
+			onError: error => {
+				if (axios.isAxiosError(error)) {
+					if (error.response && !error.response.data.errors && error.response.data.message) {
+						toast.error(error.response?.data.message)
+					}
+				}
 			}
 		})
 	}

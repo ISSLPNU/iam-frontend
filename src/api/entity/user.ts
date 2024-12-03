@@ -23,6 +23,10 @@ export interface IUserSignIn {
 	password: string;
 }
 
+export interface ITwoFactorRequest extends IAuthenticationActionRequest {
+	secret: number;
+}
+
 export interface IUserSignInResponse extends IAuthenticationActionRequest {
 	twoFactor: boolean;
 	emailConfirmed: boolean;

@@ -11,6 +11,8 @@ import {InputField} from "../../../components/shared-ui/form/fields/inputField/i
 import {useSignUp} from "../../../api/hook/user-auth/use-signUp.tsx";
 import {useNavigate} from "react-router-dom";
 import {authPages} from "../auth-routes.tsx";
+import axios from "axios";
+import {toast} from "react-toastify";
 
 const StyledFormWrapper = styled.div`
     display: flex;
@@ -55,9 +57,14 @@ export const SignUpPage = (
 		mutate(data, {
 			onSuccess: () => {
 				navigate(authPages.user.settings())
+				toast.success("You have successfully registered, please check your registration confirmation email")
 			},
-			onError: (error) => {
-				console.error(error)
+			onError: error => {
+				if (axios.isAxiosError(error)) {
+					if (error.response && !error.response.data.errors && error.response.data.message) {
+						toast.error(error.response?.data.message)
+					}
+				}
 			}
 		})
 	}

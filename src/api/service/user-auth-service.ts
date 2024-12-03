@@ -4,7 +4,7 @@ import {
 	IUserRestorePasswordRequest,
 	IUserSignIn,
 	IAuthenticationActionRequest,
-	IUserSignInResponse, IUserRestorePassword
+	IUserSignInResponse, IUserRestorePassword, ITwoFactorRequest
 } from "../entity/user.ts";
 import {AxiosResponse} from "axios";
 
@@ -28,7 +28,7 @@ class UserAuthService {
 		return axiosInstance.post(`${this.url}/action/confirmSignUp`, data)
 	}
 
-	twoFactorConfirm(data: IAuthenticationActionRequest): Promise<AxiosResponse<void>>  {
+	twoFactorConfirm(data: ITwoFactorRequest): Promise<AxiosResponse<IUserSignInResponse>>  {
 		return axiosInstance.post(`${this.url}/action/twoFactorConfirm`, data)
 	}
 

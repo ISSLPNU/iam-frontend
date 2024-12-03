@@ -8,6 +8,8 @@ import {useRestorePassword} from "../../../api/hook/user-auth/use-restore-passwo
 import {IUserRestorePasswordRequest} from "../../../api/entity/user.ts";
 import {InputField} from "../../../components/shared-ui/form/fields/inputField/inputField.tsx";
 import {authPages} from "../../auth/auth-routes.tsx";
+import {toast} from "react-toastify";
+import axios from "axios";
 
 const StyledFormWrapper = styled.div`
     display: flex;
@@ -42,10 +44,16 @@ export const PasswordRestorePage = ({...props}: PasswordRestorePageProps) => {
 	const {mutate} = useRestorePassword()
 
 	const onSubmit: SubmitHandler<UserPasswordRestoreForm> = (data) => {
-		console.log(data)
 		mutate(data, {
-			onSuccess: response => {
-				console.log(response)
+			onSuccess: _ => {
+				toast.success("Check your email for further password reset")
+			},
+			onError: error => {
+				if (axios.isAxiosError(error)) {
+					if (error.response && !error.response.data.errors && error.response.data.message) {
+						toast.error(error.response?.data.message)
+					}
+				}
 			}
 		})
 	}

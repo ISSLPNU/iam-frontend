@@ -1,5 +1,11 @@
 import axios, {InternalAxiosRequestConfig} from "axios";
 
+export interface ServerError {
+	message: string;
+	errors: string[] | null;
+	fieldErrors: string[] | null;
+}
+
 const useToken = (req: InternalAxiosRequestConfig) => {
   const token = localStorage.getItem("userToken");
   if (token && token !== "null") {

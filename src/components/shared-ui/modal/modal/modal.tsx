@@ -2,7 +2,7 @@ import {ComponentProps, ReactNode, useCallback, useEffect, useRef, useState} fro
 import styled from "styled-components";
 import {createPortal} from "react-dom";
 import {ModalCloseStatus} from "./modalCloseStatus.ts";
-import {useClickOutside} from "../../../hooks/useClickOutside.tsx";
+import {useClickOutside} from "../../../../hook/useClickOutside.tsx";
 import _ from "lodash";
 
 const StyledModalWrapper = styled.div`

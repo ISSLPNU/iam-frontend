@@ -2,7 +2,7 @@ import {ComponentProps} from "react";
 import {Navigate, Outlet} from "react-router-dom";
 import {useAuth} from "../auth-context.tsx";
 
-export const RequireAuth = ({...props}: RequireAuthProps) => {
+export const  RequireAuth = ({...props}: RequireAuthProps) => {
 	const {isAuthenticated} = useAuth();
 
 	console.log(isAuthenticated());
