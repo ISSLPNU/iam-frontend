@@ -18,7 +18,9 @@ import {Modal} from "../../../components/shared-ui/modal/modal/modal.tsx";
 import {TFACodeModal} from "./tfa-code-modal.tsx";
 import {useTwoFactorConfirm} from "../../../api/hook/user-auth/use-two-factor-confirm.tsx";
 import ReCAPTCHA from "react-google-recaptcha";
-import {DevTool} from "@hookform/devtools";
+import {CredentialResponse, GoogleLogin} from "@react-oauth/google";
+import {useOAuthLogin} from "../../../api/hook/oauth/useOAuthLogin.tsx";
+import {OAuthProvider} from "../../../api/entity/constant/oauth-provider.ts";
 
 
 const StyledFormWrapper = styled.div`
@@ -30,6 +32,12 @@ const StyledFormWrapper = styled.div`
 
     width: 100%;
     height: 100%;
+`
+
+const StyledGoogleLoginWrapper = styled.div`
+    margin: 20px 0 0 0;
+
+    width: 100%;
 `
 
 const StyledForm = styled(SimpleForm)`
@@ -49,7 +57,7 @@ export const SignInPage = (
 		resolver: yupResolver(schema),
 		disabled: disabled || false,
 		defaultValues: {
-			email: "test@example.com",
+			email: "jjerome010@gmail.com",
 			password: "Aa1!aaaa",
 		}
 	})
@@ -60,9 +68,32 @@ export const SignInPage = (
 	const {mutate: signIn} = useSignIn()
 	const {mutate: TFASignIn} = useTwoFactorConfirm()
 	const {login} = useAuth()
+	const {oAuthLogin} = useOAuthLogin()
+
+	const onAuthResponse = (credential: CredentialResponse) => {
+		if (credential && credential.credential){
+			oAuthLogin({
+				token: credential.credential,
+				provider: OAuthProvider.GOOGLE
+			}, {
+				onSuccess: data => {
+					login(data.data.token)
+					toast.success("Login successful")
+					navigate(authPages.user.settings())
+				},
+				onError: error => {
+					if (axios.isAxiosError(error)) {
+						if (error.response && !error.response.data.errors && error.response.data.message) {
+							toast.error(error.response?.data.message)
+						}
+					}
+				}
+			})
+		}
+	}
 
 	const onSubmit: SubmitHandler<UserSignInFromType> = (data) => {
-		if (!captchaKey){
+		if (!captchaKey) {
 			toast.error("Captcha key missing")
 			return
 		}
@@ -75,6 +106,8 @@ export const SignInPage = (
 				if (data.data.twoFactor) {
 					setTfaToken(data.data.token)
 					setIsTFAModalOpen(true)
+				} else if (data.data.oauthProvider === OAuthProvider.GOOGLE) {
+					toast.warning("Please sign in using your Google account")
 				} else {
 					login(data.data.token)
 					toast.success("Login successful")
@@ -124,6 +157,14 @@ export const SignInPage = (
 				            onSubmit={handleSubmit(onSubmit)}
 				            footerLinks={(
 					            <>
+						            <StyledGoogleLoginWrapper>
+							            <GoogleLogin
+								            cancel_on_tap_outside
+								            logo_alignment="center"
+								            onSuccess={onAuthResponse}
+								            useOneTap
+							            />
+						            </StyledGoogleLoginWrapper>
 						            <RouteLink to={authPages.signUpPage()}>Sign Up</RouteLink>
 						            <RouteLink to={authPages.restorePassword()}>Forgot your password?</RouteLink>
 					            </>
@@ -147,7 +188,6 @@ export const SignInPage = (
 					</Button>
 				</StyledForm>
 			</StyledFormWrapper>
-			<DevTool control={control} />
 		</>
 	)
 }

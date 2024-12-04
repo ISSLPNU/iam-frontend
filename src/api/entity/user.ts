@@ -1,3 +1,5 @@
+import {OAuthProvider} from "./constant/oauth-provider.ts";
+
 export interface IAuthenticationActionRequest{
 	token: string;
 }
@@ -9,6 +11,7 @@ export interface IUser {
 	email: string;
 	tfaEnabled: boolean;
 	role: string;
+	oauthProvider: OAuthProvider;
 }
 
 export interface IUserSignUp {
@@ -31,6 +34,7 @@ export interface ITwoFactorRequest extends IAuthenticationActionRequest {
 export interface IUserSignInResponse extends IAuthenticationActionRequest {
 	twoFactor: boolean;
 	emailConfirmed: boolean;
+	oauthProvider: OAuthProvider;
 }
 
 export interface IUserRestorePasswordRequest {

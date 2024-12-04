@@ -59,7 +59,7 @@ export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 	const toggleTFAEvent = useCallback((isTFAEnabled: boolean) => {
 		toggleTFA(!isTFAEnabled, {
 			onSuccess: () => {
-				if (isTFAEnabled){
+				if (isTFAEnabled) {
 					toast.warning("TFA disabled")
 				} else {
 					toast.success("TFA enabled")
@@ -74,7 +74,7 @@ export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 				}
 			}
 		})
-	}, [toggleTFA])
+	}, [setValue, toggleTFA])
 
 	return (
 		<StyledFormWrapper>
@@ -85,7 +85,9 @@ export const AuthUserSettingsPage = ({...props}: AuthUserPageProps) => {
 				<InputField disabled control={control} name="firstName" labelText="First Name"/>
 				<InputField disabled control={control} name="lastName" labelText="Last Name"/>
 				<InputField disabled control={control} name="email" labelText="Email"/>
-				<TFAField control={control} name="tfaEnabled" onToggleTFA={toggleTFAEvent} />
+				{user?.oauthProvider === "INTERNAL" && (
+					<TFAField control={control} name="tfaEnabled" onToggleTFA={toggleTFAEvent}/>
+				)}
 			</StyledForm>
 			<Button themeStyle="message" onClick={logout}>
 				Logout

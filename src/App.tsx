@@ -12,7 +12,7 @@ function App() {
 				<AppRouter/>
 			</AuthProvider>
 			<ModalParent id="modal-parent"/>
-			<DynamicBackground bgText="ISSA"/>
+			<DynamicBackground bgText="ISSLIAM"/>
 			<ToastContainer
 				position="bottom-right"
 				autoClose={5000}
