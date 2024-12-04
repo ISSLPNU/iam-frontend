@@ -21,6 +21,7 @@ export interface IUserSignUp {
 export interface IUserSignIn {
 	email: string;
 	password: string;
+	captchaToken?: string;
 }
 
 export interface ITwoFactorRequest extends IAuthenticationActionRequest {

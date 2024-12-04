@@ -18,6 +18,7 @@ import {Modal} from "../../../components/shared-ui/modal/modal/modal.tsx";
 import {TFACodeModal} from "./tfa-code-modal.tsx";
 import {useTwoFactorConfirm} from "../../../api/hook/user-auth/use-two-factor-confirm.tsx";
 import ReCAPTCHA from "react-google-recaptcha";
+import {DevTool} from "@hookform/devtools";
 
 
 const StyledFormWrapper = styled.div`
@@ -54,13 +55,22 @@ export const SignInPage = (
 	})
 	const [isTFAModalOpen, setIsTFAModalOpen] = useState(false)
 	const [tfaToken, setTfaToken] = useState<string | undefined>(undefined)
+	const [captchaKey, setCaptchaKey] = useState<string | undefined>()
 	const navigate = useNavigate()
 	const {mutate: signIn} = useSignIn()
 	const {mutate: TFASignIn} = useTwoFactorConfirm()
 	const {login} = useAuth()
 
 	const onSubmit: SubmitHandler<UserSignInFromType> = (data) => {
-		signIn(data, {
+		if (!captchaKey){
+			toast.error("Captcha key missing")
+			return
+		}
+
+		signIn({
+			...data,
+			captchaToken: captchaKey
+		}, {
 			onSuccess: data => {
 				if (data.data.twoFactor) {
 					setTfaToken(data.data.token)
@@ -123,9 +133,9 @@ export const SignInPage = (
 					<InputField control={control} name="email" labelText="Email"/>
 					<PasswordField control={control} name="password" labelText="Password"/>
 					<ReCAPTCHA
-						style={{ display: "inline-block" }}
 						theme="dark"
-						sitekey={"6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"}
+						sitekey={import.meta.env.VITE_IAM_RECAPTCHA_PUBLIC}
+						onChange={(key: string) => setCaptchaKey(key)}
 					/>
 					<Button
 						disabled={!formState.isValid || disabled}
@@ -137,6 +147,7 @@ export const SignInPage = (
 					</Button>
 				</StyledForm>
 			</StyledFormWrapper>
+			<DevTool control={control} />
 		</>
 	)
 }
@@ -145,7 +156,7 @@ type SignInPageProps = {
 	disabled?: boolean
 } & Omit<ComponentProps<"form">, "ref" | "onSubmit" | "children" | "defaultValue">
 
-type UserSignInFromType = {} & IUserSignIn
+type UserSignInFromType = {} & Omit<IUserSignIn, "captchaToken">
 
 const schema = Yup.object().shape({
 	email: Yup.string().label("Email")
